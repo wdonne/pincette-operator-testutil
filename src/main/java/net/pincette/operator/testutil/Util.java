@@ -35,7 +35,7 @@ public class Util {
   }
 
   public static <T> void createOrReplaceAndWait(final Resource<T> resource) {
-    resource.createOrReplace();
+    resource.serverSideApply();
     waitForCreate(resource);
   }
 
@@ -57,14 +57,10 @@ public class Util {
   }
 
   public static <T> void waitForCreate(final Resource<T> resource) {
-    doUntil(
-        () -> tryToGet(() -> resource.fromServer().get() != null, e -> false).orElse(false),
-        WAIT_INTERVAL);
+    doUntil(() -> tryToGet(() -> resource.get() != null, e -> false).orElse(false), WAIT_INTERVAL);
   }
 
   public static <T> void waitForDelete(final Resource<T> resource) {
-    doUntil(
-        () -> tryToGet(() -> resource.fromServer().get() == null, e -> true).orElse(true),
-        WAIT_INTERVAL);
+    doUntil(() -> tryToGet(() -> resource.get() == null, e -> true).orElse(true), WAIT_INTERVAL);
   }
 }
